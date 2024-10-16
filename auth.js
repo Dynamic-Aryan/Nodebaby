@@ -6,14 +6,14 @@ const Person = require("./models/person.js");
 
 
 passport.use(
-    new LocalStrategy(async (USERNAME, password, done) => {
+    new LocalStrategy(async (username, password, done) => {
       //authentication logic here
       try {
-        console.log("Received Credentials:", USERNAME, password);
-        const user = await Person.findOne({ username: USERNAME });
+        // console.log("Received Credentials:", USERNAME, password);
+        const user = await Person.findOne({ username});
         if (!user) return done(null, false, { message: "Incorrect Username." });
   
-        const isPasswordMatch = user.password === password ? true : false;
+        const isPasswordMatch = await user.comparePassword(password);
         if (isPasswordMatch) {
           return done(null, user);
         } else {
